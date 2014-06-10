@@ -24,4 +24,12 @@
     <properties>
         <project.root>..</project.root>
     </properties>
+
+    <!-- Dependencies -->
+    <dependencies>
+        <dependency>
+            <groupId>ar.com.argentum</groupId>
+            <artifactId>argentum-common</artifactId>
+        </dependency>
+    </dependencies>
 </project>

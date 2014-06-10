@@ -26,7 +26,7 @@ package ar.com.argentum.common.protocol;
  * <li>All fields in a message should be protocol-primitive</li>
  * </ul>
  */
-public class Message {
+public abstract class Message {
     private final boolean isPlayerRequired;
     private final boolean isAsync;
 
@@ -40,7 +40,6 @@ public class Message {
         this.isPlayerRequired = isPlayerRequired;
         this.isAsync = isAsync;
     }
-
 
     /**
      * Gets if the message is handled asynchronized

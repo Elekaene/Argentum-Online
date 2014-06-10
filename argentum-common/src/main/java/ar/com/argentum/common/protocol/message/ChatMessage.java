@@ -15,29 +15,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ar.com.argentum.common.protocol;
+package ar.com.argentum.common.protocol.message;
+
+import ar.com.argentum.common.protocol.Message;
 
 /**
- * Define all possible states of {@link Session}
+ * Define the common chat {@link Message}
  */
-public enum SessionState {
+public final class ChatMessage extends Message {
     /**
-     * In the exchange handshake state, the server is waiting for the client to send its initial handshake packet.
+     * The unique identifier of the message
      */
-    EXCHANGE_HANDSHAKE,
+    public final static int ID = 1;
 
     /**
-     * In the exchange identification state, the server is waiting for the client to send its identification packet.
+     * The data of the message (immutable)
      */
-    EXCHANGE_IDENTIFICATION,
+    private final String message;
 
     /**
-     * This state is when a critical message has been sent that must be waited for.
+     * Default constructor for {@link ChatMessage}
      */
-    WAITING,
+    public ChatMessage(String message) {
+        super(true, true);
+        this.message = message;
+    }
 
     /**
-     * In the game state the session has an associated player.
+     * Retrieve the message of the chat
+     *
+     * @return the message of a player
      */
-    GAME
+    public String getMessage() {
+        return message;
+    }
 }

@@ -27,21 +27,4 @@ package ar.com.argentum.common.protocol;
  * </ul>
  */
 public interface Message {
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean equals(Object other);
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int hashCode();
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toString();
 }

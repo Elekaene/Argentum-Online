@@ -60,68 +60,22 @@ public abstract class MessageCodec<T extends Message> {
     /**
      * Encode the message
      *
-     * @param isClient true if the request is from the client
      * @param message  the message to encode
      * @return a buffer containing the message encoded
      * @throws IOException
      */
-    public ByteBuf encode(boolean isClient, T message) throws IOException {
-        return isClient ? encodeToServer(message) : encodeToClient(message);
-    }
-
-    /**
-     * Encodes the message for the client
-     *
-     * @param message the message to encode
-     * @return a buffer containing the message encoded
-     * @throws IOException
-     */
-    public ByteBuf encodeToClient(T message) throws IOException {
-        return null;
-    }
-
-    /**
-     * Encodes the message for the server
-     *
-     * @param message the message to encode
-     * @return a buffer containing the message encoded
-     * @throws IOException
-     */
-    public ByteBuf encodeToServer(T message) throws IOException {
+    public ByteBuf encode(T message) throws IOException {
         return null;
     }
 
     /**
      * Decodes the message
      *
-     * @param isClient true if the request is from the client
      * @param buffer   the buffer where the message's bytes are stored
      * @return the message decoded from the buffer
      * @throws IOException
      */
-    public T decode(boolean isClient, ByteBuf buffer) throws IOException {
-        return isClient ? decodeToClient(buffer) : decodeServer(buffer);
-    }
-
-    /**
-     * Decodes the message for the client
-     *
-     * @param buffer the buffer where the message's bytes are stored
-     * @return the message decoded from the buffer
-     * @throws IOException
-     */
-    public T decodeToClient(ByteBuf buffer) throws IOException {
-        return null;
-    }
-
-    /**
-     * Decodes the message for the server
-     *
-     * @param buffer the buffer where the message's bytes are stored
-     * @return the message decoded from the buffer
-     * @throws IOException
-     */
-    public T decodeServer(ByteBuf buffer) throws IOException {
+    public T decode(ByteBuf buffer) throws IOException {
         return null;
     }
 }

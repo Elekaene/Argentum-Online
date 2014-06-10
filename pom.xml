@@ -1,0 +1,129 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Project information -->
+    <name>Argentum Online</name>
+    <groupId>ar.com.argentum</groupId>
+    <artifactId>argentum-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <inceptionYear>2014</inceptionYear>
+    <url>https://github.com/Argentum-Online/Argentum-Online</url>
+    <description>Parent Maven project pom for the Argentum Online platform.</description>
+
+    <!-- Project modules -->
+    <modules>
+        <module>Common</module>
+        <module>Client</module>
+        <module>Server</module>
+    </modules>
+
+    <!-- Build properties -->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.root>.</project.root>
+        <buildNumber>0</buildNumber>
+        <ciSystem>unknown</ciSystem>
+        <commit>unknown</commit>
+    </properties>
+
+    <!-- License information -->
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <!-- Organization information -->
+    <organization>
+        <name>Argentum Online Dev Team</name>
+        <url>http://www.gs-zone.org</url>
+    </organization>
+
+    <!-- Continuous integration (TODO) -->
+    <!-- Issue management (TODO) -->
+
+    <!-- Build configuration -->
+    <build>
+        <defaultGoal>clean install</defaultGoal>
+
+        <!-- Resources to include -->
+        <resources>
+            <!-- Static resources -->
+            <resource>
+                <filtering>false</filtering>
+                <directory>${project.root}</directory>
+                <targetPath>.</targetPath>
+                <includes>
+                    <include>LICENSE</include>
+                </includes>
+            </resource>
+            <resource>
+                <filtering>false</filtering>
+                <directory>src/main/resources</directory>
+                <targetPath>.</targetPath>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <!-- Build plugins -->
+        <plugins>
+            <!-- License header plugin -->
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>1.10.b1</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <properties>
+                                <url>${project.organization.url}</url>
+                                <inceptionYear>${project.inceptionYear}</inceptionYear>
+                                <organization>${project.organization.name}</organization>
+                            </properties>
+                            <quiet>true</quiet>
+                            <encoding>UTF-8</encoding>
+                            <strictCheck>true</strictCheck>
+                            <header>${project.root}/HEADER.txt</header>
+                            <mapping>
+                                <java>SLASHSTAR_STYLE</java>
+                            </mapping>
+                            <keywords>
+                                <keyword>license</keyword>
+                            </keywords>
+                            <includes>
+                                <include>src/main/java/**</include>
+                                <include>src/test/java/**</include>
+                            </includes>
+                        </configuration>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Source compiler plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                    <compilerArguments>
+                        <O>-Xlint:all</O>
+                        <O>-Xlint:-path</O>
+                    </compilerArguments>
+                    <showWarnings>true</showWarnings>
+                    <showDeprecation>true</showDeprecation>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -13,9 +13,8 @@
 
     <!-- Project modules -->
     <modules>
-        <module>argentum-client</module>
-        <module>argentum-common</module>
-        <module>argentum-server</module>
+        <module>argentum-api</module>
+        <module>argentum-engine</module>
     </modules>
 
     <!-- Build properties -->

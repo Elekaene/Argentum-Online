@@ -15,8 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ar.com.argentum.api.protocol;
+package ar.com.argentum.engine.protocol;
 
+import ar.com.argentum.api.protocol.Message;
+import ar.com.argentum.api.protocol.MessageCodec;
+import ar.com.argentum.api.protocol.MessageLookupService;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -26,7 +29,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Define the {@link MessageToMessageEncoder} for turning {@link Message} into bytes
+ * Define the {@link MessageToMessageEncoder} for turning {@link ar.com.argentum.api.protocol.Message} into bytes
  */
 public class CommonMessageToMessageEncoder extends MessageToMessageEncoder {
     private final MessageLookupService service;

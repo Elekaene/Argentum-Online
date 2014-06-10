@@ -15,40 +15,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ar.com.argentum.engine.protocol.codec;
+package ar.com.argentum.engine.protocol;
 
-import ar.com.argentum.api.protocol.MessageCodec;
-import ar.com.argentum.engine.protocol.message.ChatMessage;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.util.CharsetUtil;
-
-import java.io.IOException;
+import ar.com.argentum.api.protocol.Message;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
 
 /**
- * Define the {@link MessageCodec} for {@link ChatMessage}
+ * A {@link SimpleChannelInboundHandler} which processes incoming messages
  */
-public class ChatMessageCodec extends MessageCodec<ChatMessage> {
+public class CommonHandler extends SimpleChannelInboundHandler<Message> {
     /**
-     * Default constructor for {@link ChatMessageCodec}
+     * {@inheritDoc}
      */
-    public ChatMessageCodec() {
-        super(ChatMessage.class, ChatMessage.ID);
+    @Override
+    protected void messageReceived(ChannelHandlerContext ctx, Message msg) throws Exception {
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ByteBuf encode(ChatMessage message) throws IOException {
-        return Unpooled.copiedBuffer(message.getMessage(), CharsetUtil.UTF_8);
+    public void channelActive(ChannelHandlerContext ctx) {
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ChatMessage decode(ByteBuf buffer) throws IOException {
-        return new ChatMessage(buffer.toString(CharsetUtil.UTF_8));
+    public void channelInactive(ChannelHandlerContext ctx) {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
     }
 }

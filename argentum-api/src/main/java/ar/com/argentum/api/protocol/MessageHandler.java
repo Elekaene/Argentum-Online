@@ -17,6 +17,8 @@
  */
 package ar.com.argentum.api.protocol;
 
+import ar.com.argentum.api.Platform;
+
 /**
  * Define the executor handler for a single {@link Message} type
  */
@@ -24,10 +26,40 @@ public abstract class MessageHandler<T extends Message> {
     /**
      * Handles a message
      *
+     * @param platform the current platform
+     * @param session  the session that delivers the message
+     * @param message  the message that was received
+     */
+    public void handle(Platform platform, Session session, T message) {
+        switch (platform) {
+            case CLIENT:
+                handleClient(session, message);
+                break;
+            case SERVER:
+                handleServer(session, message);
+                break;
+            default:
+                throw new UnsupportedOperationException("Trying to handle a message with an invalid handler");
+        }
+    }
+
+    /**
+     * Handles a message as the client
+     *
      * @param session the session that delivers the message
      * @param message the message that was received
      */
-    public void handle(Session session, T message) {
+    public void handleClient(Session session, T message) {
+        throw new UnsupportedOperationException("Trying to handle a message with an invalid handler");
+    }
+
+    /**
+     * Handles a message as the server
+     *
+     * @param session the session that delivers the message
+     * @param message the message that was received
+     */
+    public void handleServer(Session session, T message) {
         throw new UnsupportedOperationException("Trying to handle a message with an invalid handler");
     }
 }

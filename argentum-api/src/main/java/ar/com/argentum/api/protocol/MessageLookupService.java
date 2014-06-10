@@ -37,7 +37,7 @@ public final class MessageLookupService {
      *
      * @param size the max number of codec allowed to register
      */
-    protected MessageLookupService(int size) {
+    public MessageLookupService(int size) {
         this.classTable = new HashMap<>(size);
         this.handlerTable = new HashMap<>(size);
         this.opcodeTable = new MessageCodec<?>[size];

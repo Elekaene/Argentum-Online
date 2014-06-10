@@ -59,6 +59,13 @@ public interface Session {
     public void send(Message message);
 
     /**
+     * Sends a message across the network right away
+     *
+     * @param message the message to send to the network
+     */
+    public void sendImmediate(Message message);
+
+    /**
      * Sends a message across the network
      *
      * @param isUrgent true if the message is urgent

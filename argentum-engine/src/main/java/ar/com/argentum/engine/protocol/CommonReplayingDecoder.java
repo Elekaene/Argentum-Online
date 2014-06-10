@@ -15,8 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ar.com.argentum.api.protocol;
+package ar.com.argentum.engine.protocol;
 
+import ar.com.argentum.api.protocol.Message;
+import ar.com.argentum.api.protocol.MessageCodec;
+import ar.com.argentum.api.protocol.MessageLookupService;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ReplayingDecoder;
@@ -26,19 +29,10 @@ import java.util.List;
 
 /**
  * Define the {@link ReplayingDecoder} for handling header
- * <p/>
- * It will convert raw frames to {@link Message} frames
+ * <p>
+ * It will convert raw frames to {@link ar.com.argentum.api.protocol.Message} frames
  */
 public class CommonReplayingDecoder extends ReplayingDecoder<CommonReplayingDecoder.DecoderState> {
-    /**
-     * All possible states of {@link CommonReplayingDecoder}
-     */
-    protected enum DecoderState {
-        READ_ID,
-        READ_LENGTH,
-        READ_CONTENT
-    }
-
     private final MessageLookupService service;
     private DecoderState state;
     private int id;
@@ -76,7 +70,7 @@ public class CommonReplayingDecoder extends ReplayingDecoder<CommonReplayingDeco
     }
 
     /**
-     * Decodes a {@link Message} given its byte representation
+     * Decodes a {@link ar.com.argentum.api.protocol.Message} given its byte representation
      *
      * @param id    the unique identifier of the message
      * @param input the stream that stores the message's bytes
@@ -90,5 +84,14 @@ public class CommonReplayingDecoder extends ReplayingDecoder<CommonReplayingDeco
             throw new IOException("Unknown operation code: " + id);
         }
         out.add(codec.decode(input));
+    }
+
+    /**
+     * All possible states of {@link CommonReplayingDecoder}
+     */
+    protected enum DecoderState {
+        READ_ID,
+        READ_LENGTH,
+        READ_CONTENT
     }
 }

@@ -15,38 +15,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ar.com.argentum.engine.protocol.message;
+package ar.com.argentum.engine.protocol;
 
-import ar.com.argentum.api.protocol.Message;
+import ar.com.argentum.api.Platform;
+import ar.com.argentum.api.protocol.MessageLookupService;
+import io.netty.channel.Channel;
 
 /**
- * Define the common chat {@link Message}
+ * Define {@link CommonSession} for server platform
  */
-public final class ChatMessage extends Message {
+public class CommonServerSession extends CommonSession {
     /**
-     * The unique identifier of the message
+     * Default constructor for {@link CommonServerSession}
+     *
+     * @param channel the channel attached to this session
+     * @param service the service of the session
      */
-    public final static int ID = 1;
-
-    /**
-     * The data of the message (immutable)
-     */
-    private final String message;
-
-    /**
-     * Default constructor for {@link ChatMessage}
-     */
-    public ChatMessage(String message) {
-        super(true, true);
-        this.message = message;
+    public CommonServerSession(Channel channel, MessageLookupService service) {
+        super(Platform.SERVER, service, channel);
     }
 
     /**
-     * Retrieve the message of the chat
-     *
-     * @return the message of a player
+     * {@inheritDoc}
      */
-    public String getMessage() {
-        return message;
+    @Override
+    public boolean disconnect(String reason) {
+        return false;
     }
 }

@@ -21,22 +21,25 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Define the service for {@link MessageCodec} and {@link Message}
  */
 public final class MessageLookupService {
-    private final ConcurrentHashMap<Class<? extends Message>, MessageCodec<?>> classTable;
+    private final Map<Class<? extends Message>, MessageHandler<?>> handlerTable;
+    private final Map<Class<? extends Message>, MessageCodec<?>> classTable;
     private final MessageCodec<?>[] opcodeTable;
 
     /**
      * Default constructor for {@link MessageLookupService}
      *
-     * @param size   the max number of codec allowed to register
+     * @param size the max number of codec allowed to register
      */
     protected MessageLookupService(int size) {
-        this.classTable = new ConcurrentHashMap<>(size, 1.0f);
+        this.classTable = new HashMap<>(size);
+        this.handlerTable = new HashMap<>(size);
         this.opcodeTable = new MessageCodec<?>[size];
     }
 
@@ -66,6 +69,31 @@ public final class MessageLookupService {
         }
         register(codec);
         return codec;
+    }
+
+    /**
+     * Bind a {@link MessageHandler} to the service table
+     *
+     * @param clazz        the class that represent a message
+     * @param handlerClass the class that represent a handler
+     * @param <T>          the class type of the message
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    protected <T extends Message> void bind(Class<T> clazz, Class<? extends MessageHandler<T>> handlerClass) throws
+            InstantiationException, IllegalAccessException {
+        MessageHandler<T> handler = handlerClass.newInstance();
+        handlerTable.put(clazz, handler);
+    }
+
+    /**
+     * Bind a {@link MessageHandler} to the service table
+     *
+     * @param clazz   the class type of the message
+     * @param handler the handler for the given message
+     */
+    protected <T extends Message> void register(Class<T> clazz, MessageHandler<T> handler) {
+        handlerTable.put(clazz, handler);
     }
 
     /**
@@ -112,5 +140,17 @@ public final class MessageLookupService {
      */
     public Collection<MessageCodec<?>> getCodecs() {
         return Collections.unmodifiableCollection(classTable.values());
+    }
+
+    /**
+     * Gets a {@link MessageHandler} from the service given the {@link Message}'s class
+     *
+     * @param clazz the message class
+     * @param <T>   the class type of the message
+     * @return the handler if the class is valid, null otherwise
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends Message> MessageHandler<T> getHandler(Class<T> clazz) {
+        return (MessageHandler<T>) handlerTable.get(clazz);
     }
 }

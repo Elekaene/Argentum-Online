@@ -53,7 +53,12 @@
         </dependency>
     </dependencies>
 
-    <!-- Continuous integration (TODO) -->
+    <!-- Continuous integration -->
+    <ciManagement>
+        <system>travis</system>
+        <url>https://travis-ci.org/Argentum-Online/Argentum-Online</url>
+    </ciManagement>
+
     <!-- Issue management (TODO) -->
 
     <!-- Build configuration -->

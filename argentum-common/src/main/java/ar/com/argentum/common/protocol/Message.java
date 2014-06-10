@@ -26,5 +26,37 @@ package ar.com.argentum.common.protocol;
  * <li>All fields in a message should be protocol-primitive</li>
  * </ul>
  */
-public interface Message {
+public class Message {
+    private final boolean isPlayerRequired;
+    private final boolean isAsync;
+
+    /**
+     * Default constructor for {@link Message}
+     *
+     * @param isPlayerRequired true if the message needs an entity to work
+     * @param isAsync          true if the message doesn't run on the main thread
+     */
+    public Message(boolean isPlayerRequired, boolean isAsync) {
+        this.isPlayerRequired = isPlayerRequired;
+        this.isAsync = isAsync;
+    }
+
+
+    /**
+     * Gets if the message is handled asynchronized
+     *
+     * @return true if the message is not handled on the main thread
+     */
+    public final boolean isAsync() {
+        return isAsync;
+    }
+
+    /**
+     * Gets if the message need a player to handle
+     *
+     * @return true if the message depends from an entity
+     */
+    public final boolean isPlayerRequired() {
+        return isPlayerRequired;
+    }
 }

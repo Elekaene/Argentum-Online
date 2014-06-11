@@ -17,71 +17,52 @@
  */
 package ar.com.argentum.api.plugin;
 
+import java.io.File;
+import java.util.logging.Logger;
+
 /**
  * Define the base class for a plug-in
  */
-public class Plugin {
-    private final Descriptor descriptor;
-    private final String folder;
-    private boolean isEnabled;
-
+public interface Plugin {
     /**
-     * Default constructor of {@link Plugin}
-     *
-     * @param descriptor the descriptor that contains the information of the plug-in
-     * @param folder     the folder where the plug-in store all configuration
-     */
-    public Plugin(Descriptor descriptor, String folder) {
-        this.descriptor = descriptor;
-        this.folder = folder;
-        this.isEnabled = false;
-    }
-
-    /**
-     * Gets the descriptor of this {@link Plugin}
+     * Gets the descriptor of this plug-in
      *
      * @return the descriptor of the plug-in
      */
-    public Descriptor getDescriptor() {
-        return descriptor;
-    }
+    public Descriptor getDescriptor();
 
     /**
-     * Gets the folder of this {@link Plugin}
+     * Gets the folder of this plug-in
      *
      * @return the folder of the plug-in
      */
-    public String getFolder() {
-        return folder;
-    }
+    public File getFolder();
 
     /**
-     * Gets the name of this {@link Plugin}
+     * Gets the name of this plug-in
      *
      * @return the name of the plug-in
      */
-    public String getName() {
-        return descriptor.getName();
-    }
+    public String getName();
 
     /**
-     * Gets if this {@link Plugin} is disabled
+     * Gets if this plug-in is disabled
      *
      * @return true if the plug-in is disabled
      */
-    public boolean isDisabled() {
-        return !isEnabled;
-    }
+    public boolean isDisabled();
 
     /**
-     * Gets if this {@link Plugin} is enabled
+     * Gets if this plug-in is enabled
      *
      * @return true if the plug-in is enabled
      */
-    public boolean isEnabled() {
-        return isEnabled;
-    }
+    public boolean isEnabled();
 
-    ;
-
+    /**
+     * Gets the {@link Logger} of the plug-in
+     *
+     * @return the logger instance of the plug-in
+     */
+    public Logger getLogger();
 }

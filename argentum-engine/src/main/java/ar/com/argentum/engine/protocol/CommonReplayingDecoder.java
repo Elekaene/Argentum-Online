@@ -45,7 +45,6 @@ public class CommonReplayingDecoder extends ReplayingDecoder<CommonReplayingDeco
      */
     public CommonReplayingDecoder(MessageLookupService service) {
         super(DecoderState.READ_ID);
-
         this.service = service;
     }
 

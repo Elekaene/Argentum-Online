@@ -108,9 +108,10 @@ public abstract class CommonSession implements Session {
     }
 
     /**
-     * {@inheritDoc}
+     * Sets the current {@link SessionState} of the session
+     *
+     * @param state the new state of the session
      */
-    @Override
     public void setState(SessionState state) {
         this.state = state;
     }
@@ -124,9 +125,10 @@ public abstract class CommonSession implements Session {
     }
 
     /**
-     * {@inheritDoc}
+     * Attach a player to the session
+     *
+     * @param player the player to attach to this session
      */
-    @Override
     public void setPlayer(Player player) {
         this.player = player;
     }
@@ -154,7 +156,8 @@ public abstract class CommonSession implements Session {
                 sendQueue.add(message);
             }
         } catch (Throwable ex) {
-            disconnect("Internal error: " + ex.getMessage());
+            // <TODO: Wolftein - Use Engine::Logger to display an error>
+            disconnect("An exception has raised: " + ex.getLocalizedMessage());
         }
     }
 
@@ -211,6 +214,20 @@ public abstract class CommonSession implements Session {
     }
 
     /**
+     * Called when the session receives a message
+     *
+     * @param message the message received
+     * @param <T>     the type of the message
+     */
+    public <T extends Message> void onMessageReceive(T message) {
+        if (message.isAsync()) {
+            handleMessage(message);
+        } else {
+            messageQueue.add(message);
+        }
+    }
+
+    /**
      * Handle command {@link MessageHandler}
      *
      * @param message the message to handle
@@ -223,22 +240,9 @@ public abstract class CommonSession implements Session {
             try {
                 handler.handle(platform, this, message);
             } catch (Throwable ex) {
-                disconnect("Internal error: " + ex.getMessage());
+                // <TODO: Wolftein - Use Engine::Logger to display an error>
+                disconnect("An exception has raised: " + ex.getLocalizedMessage());
             }
-        }
-    }
-
-    /**
-     * Called when the session receives a message
-     *
-     * @param message the message received
-     * @param <T>     the type of the message
-     */
-    public <T extends Message> void handleMessageReceive(T message) {
-        if (message.isAsync()) {
-            handleMessage(message);
-        } else {
-            messageQueue.add(message);
         }
     }
 }

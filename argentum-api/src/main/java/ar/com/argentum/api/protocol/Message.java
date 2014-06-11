@@ -19,7 +19,7 @@ package ar.com.argentum.api.protocol;
 
 /**
  * Represent the data of a packet to be transported though the networking system.
- * <p/>
+ * <p>
  * There are a few rules that messages should follow:
  * <ul>
  * <li>All message fields should be immutable</li>
@@ -27,17 +27,17 @@ package ar.com.argentum.api.protocol;
  * </ul>
  */
 public abstract class Message {
-    private final boolean isPlayerRequired;
+    private final SessionState requiredState;
     private final boolean isAsync;
 
     /**
      * Default constructor for {@link Message}
      *
-     * @param isPlayerRequired true if the message needs an entity to work
-     * @param isAsync          true if the message doesn't run on the main thread
+     * @param requiredState the required state of the message
+     * @param isAsync       true if the message doesn't run on the main thread
      */
-    public Message(boolean isPlayerRequired, boolean isAsync) {
-        this.isPlayerRequired = isPlayerRequired;
+    public Message(SessionState requiredState, boolean isAsync) {
+        this.requiredState = requiredState;
         this.isAsync = isAsync;
     }
 
@@ -51,11 +51,11 @@ public abstract class Message {
     }
 
     /**
-     * Gets if the message need a player to handle
+     * Gets the required state of the message
      *
-     * @return true if the message depends from an entity
+     * @return the required state of the message
      */
-    public final boolean isPlayerRequired() {
-        return isPlayerRequired;
+    public final SessionState getRequiredState() {
+        return requiredState;
     }
 }

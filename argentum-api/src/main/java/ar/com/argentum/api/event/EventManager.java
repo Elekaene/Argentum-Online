@@ -55,12 +55,9 @@ public interface EventManager {
      *
      * @param owner            the owner of the event
      * @param handler          the handler of the event
-     * @param priority         the priority of the event
-     * @param ignoredCancelled true if ignores when the event is cancelled
      * @param <T>              the type of the event
      */
-    public <T extends Event> void registerEvent(Plugin owner, Consumer<T> handler, EventPriority priority,
-                                                boolean ignoredCancelled);
+    public <T extends Event> void registerEvent(Plugin owner, Consumer<T> handler);
 
     /**
      * Register all events on the given object

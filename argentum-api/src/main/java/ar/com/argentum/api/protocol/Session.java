@@ -47,25 +47,11 @@ public interface Session {
     public SessionState getState();
 
     /**
-     * Sets the current {@link SessionState} of the session
-     *
-     * @param state the new state of the session
-     */
-    public void setState(SessionState state);
-
-    /**
      * Gets the {@link Player} attached to the session
      *
      * @return the player attached to the session
      */
     public Player getPlayer();
-
-    /**
-     * Attach a player to the session
-     *
-     * @param player the player to attach to this session
-     */
-    public void setPlayer(Player player);
 
     /**
      * Sends a message across the network

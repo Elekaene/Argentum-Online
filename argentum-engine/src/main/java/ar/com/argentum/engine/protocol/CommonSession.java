@@ -17,8 +17,9 @@
  */
 package ar.com.argentum.engine.protocol;
 
-import ar.com.argentum.api.Platform;
+import ar.com.argentum.api.plugin.Platform;
 import ar.com.argentum.api.protocol.*;
+import ar.com.argentum.api.world.Player;
 import io.netty.channel.Channel;
 
 import java.net.InetSocketAddress;
@@ -63,6 +64,10 @@ public abstract class CommonSession implements Session {
      * Stores if this Session has had disconnect called
      */
     protected boolean isDisconnected = false;
+    /**
+     * The player attached to the session
+     */
+    protected Player player = null;
 
     /**
      * Default constructor for {@link CommonSession}
@@ -114,16 +119,24 @@ public abstract class CommonSession implements Session {
      * {@inheritDoc}
      */
     @Override
-    public void send(Message message) {
-        send(false, message);
+    public Player getPlayer() {
+        return player;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void sendImmediate(Message message) {
-        send(true, message);
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void send(Message message) {
+        send(false, message);
     }
 
     /**
@@ -136,7 +149,7 @@ public abstract class CommonSession implements Session {
         }
         try {
             if (isUrgent && channel.isActive()) {
-                channel.writeAndFlush(message); // TODO: Network thread pool
+                channel.writeAndFlush(message);
             } else {
                 sendQueue.add(message);
             }
@@ -183,14 +196,17 @@ public abstract class CommonSession implements Session {
      * Pulse the session
      */
     public void pulse() {
-        //
-        // Pulse every delivered message
-        //
-        sendQueue.forEach(this::sendImmediate);
+        Message message = null;
 
-        //
+        // Pulse every delivered message and cache them
+        // on the buffer. After every message was serialized to the
+        // buffer, flush it
+        while ((message = sendQueue.poll()) != null) {
+            channel.write(message);
+        }
+        channel.flush();
+
         // Pulse every received message
-        //
         messageQueue.forEach(this::handleMessage);
     }
 

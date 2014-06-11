@@ -15,31 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ar.com.argentum.engine.protocol;
-
-import ar.com.argentum.api.plugin.Platform;
-import ar.com.argentum.api.protocol.MessageLookupService;
-import io.netty.channel.Channel;
+package ar.com.argentum.api.plugin;
 
 /**
- * Define {@link CommonSession} for server platform
+ * Define the order of {@link Plugin} initialise
  */
-public class CommonServerSession extends CommonSession {
+public enum PluginOrder {
     /**
-     * Default constructor for {@link CommonServerSession}
-     *
-     * @param channel the channel attached to this session
-     * @param service the service of the session
+     * The {@link Plugin} is initialized before the world generation
      */
-    public CommonServerSession(Channel channel, MessageLookupService service) {
-        super(Platform.SERVER, service, channel);
-    }
+    STARTUP,
 
     /**
-     * {@inheritDoc}
+     * The {@link Plugin} is initialized after the world generation
      */
-    @Override
-    public boolean disconnect(String reason) {
-        return false;   // TODO
-    }
+    WORLD
 }

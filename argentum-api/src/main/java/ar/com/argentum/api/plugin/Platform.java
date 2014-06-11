@@ -15,31 +15,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ar.com.argentum.engine.protocol;
-
-import ar.com.argentum.api.plugin.Platform;
-import ar.com.argentum.api.protocol.MessageLookupService;
-import io.netty.channel.Channel;
+package ar.com.argentum.api.plugin;
 
 /**
- * Define {@link CommonSession} for server platform
+ * Define the current platform the game is running
  */
-public class CommonServerSession extends CommonSession {
+public enum Platform {
     /**
-     * Default constructor for {@link CommonServerSession}
-     *
-     * @param channel the channel attached to this session
-     * @param service the service of the session
+     * The game is running in CLIENT mode
      */
-    public CommonServerSession(Channel channel, MessageLookupService service) {
-        super(Platform.SERVER, service, channel);
-    }
+    CLIENT,
 
     /**
-     * {@inheritDoc}
+     * The game is running in SERVER mode
      */
-    @Override
-    public boolean disconnect(String reason) {
-        return false;   // TODO
-    }
+    SERVER,
+
+    /**
+     * The game is running both mode
+     */
+    BOTH
 }

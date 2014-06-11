@@ -30,6 +30,7 @@ public class CommonHandler extends SimpleChannelInboundHandler<Message> {
      */
     @Override
     protected void messageReceived(ChannelHandlerContext ctx, Message msg) throws Exception {
+        // TODO: <Wolftein>
     }
 
     /**
@@ -37,6 +38,7 @@ public class CommonHandler extends SimpleChannelInboundHandler<Message> {
      */
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
+        // TODO: <Wolftein>
     }
 
     /**
@@ -44,6 +46,7 @@ public class CommonHandler extends SimpleChannelInboundHandler<Message> {
      */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
+        // TODO: <Wolftein>
     }
 
     /**
@@ -51,5 +54,6 @@ public class CommonHandler extends SimpleChannelInboundHandler<Message> {
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        // TODO: <Wolftein>
     }
 }

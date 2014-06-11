@@ -17,7 +17,7 @@
  */
 package ar.com.argentum.api.protocol;
 
-import ar.com.argentum.api.Platform;
+import ar.com.argentum.api.plugin.Platform;
 
 /**
  * Define the executor handler for a single {@link Message} type

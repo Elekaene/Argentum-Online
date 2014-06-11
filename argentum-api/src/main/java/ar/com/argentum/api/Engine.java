@@ -18,21 +18,7 @@
 package ar.com.argentum.api;
 
 /**
- * Define the current platform the game is running
+ * Define the main interface for the engine
  */
-public enum Platform {
-    /**
-     * The game is running in CLIENT mode
-     */
-    CLIENT,
-
-    /**
-     * The game is running in SERVER mode
-     */
-    SERVER,
-
-    /**
-     * The game is running both mode
-     */
-    BOTH
+public interface Engine {
 }

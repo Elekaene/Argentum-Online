@@ -68,7 +68,7 @@ public class CommonMessageToMessageEncoder extends MessageToMessageEncoder {
             throw new IOException("Unknown operation class: " + message.getClass());
         }
         final ByteBuf body = codec.encode(message);
-        final ByteBuf header = Unpooled.buffer(4).writeShort(codec.getOpcode()).writeShort(body.capacity());
+        final ByteBuf header = Unpooled.buffer(3).writeByte(codec.getOpcode()).writeShort(body.capacity());
         out.add(Unpooled.wrappedBuffer(header, body));
     }
 }

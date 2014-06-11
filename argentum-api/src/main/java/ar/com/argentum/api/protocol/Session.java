@@ -17,6 +17,8 @@
  */
 package ar.com.argentum.api.protocol;
 
+import ar.com.argentum.api.world.Player;
+
 import java.net.InetSocketAddress;
 
 /**
@@ -52,18 +54,25 @@ public interface Session {
     public void setState(SessionState state);
 
     /**
+     * Gets the {@link Player} attached to the session
+     *
+     * @return the player attached to the session
+     */
+    public Player getPlayer();
+
+    /**
+     * Attach a player to the session
+     *
+     * @param player the player to attach to this session
+     */
+    public void setPlayer(Player player);
+
+    /**
      * Sends a message across the network
      *
      * @param message the message to send to the network
      */
     public void send(Message message);
-
-    /**
-     * Sends a message across the network right away
-     *
-     * @param message the message to send to the network
-     */
-    public void sendImmediate(Message message);
 
     /**
      * Sends a message across the network

@@ -56,11 +56,11 @@ public class CommonReplayingDecoder extends ReplayingDecoder<CommonReplayingDeco
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
         switch (state) {
             case READ_ID:
-                id = in.readShort();
+                id = in.readUnsignedByte();
                 checkpoint(DecoderState.READ_LENGTH);
                 break;
             case READ_LENGTH:
-                length = in.readShort();
+                length = in.readUnsignedShort();
                 checkpoint(DecoderState.READ_CONTENT);
                 break;
             case READ_CONTENT:
@@ -79,7 +79,6 @@ public class CommonReplayingDecoder extends ReplayingDecoder<CommonReplayingDeco
      */
     protected void decodeMessage(int id, ByteBuf input, List<Object> out) throws IOException {
         MessageCodec<? extends Message> codec = service.getCodec(id);
-
         if (codec == null) {
             throw new IOException("Unknown operation code: " + id);
         }

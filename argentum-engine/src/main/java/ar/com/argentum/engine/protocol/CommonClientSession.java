@@ -17,7 +17,7 @@
  */
 package ar.com.argentum.engine.protocol;
 
-import ar.com.argentum.api.Platform;
+import ar.com.argentum.api.plugin.Platform;
 import ar.com.argentum.api.protocol.MessageLookupService;
 import io.netty.channel.Channel;
 
@@ -40,6 +40,6 @@ public class CommonClientSession extends CommonSession {
      */
     @Override
     public boolean disconnect(String reason) {
-        return false;
+        return false;   // TODO
     }
 }

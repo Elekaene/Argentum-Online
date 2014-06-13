@@ -41,9 +41,9 @@ public abstract class CommonConnection implements Connection {
      */
     protected final Channel channel;
     /**
-     * The service for the session
+     * The protocol for the session
      */
-    protected final MessageLookupService service;
+    protected final Protocol protocol;
     /**
      * A queue of incoming and unprocessed messages
      */
@@ -72,13 +72,13 @@ public abstract class CommonConnection implements Connection {
     /**
      * Default constructor for {@link CommonConnection}
      *
-     * @param service the service of the session
-     * @param channel the channel attached to this session
+     * @param protocol the protocol of the session
+     * @param channel  the channel attached to this session
      */
-    public CommonConnection(MessageLookupService service, Channel channel) {
+    public CommonConnection(Protocol protocol, Channel channel) {
         this.id = Long.toString(new Random().nextLong(), 16).trim();
         this.channel = channel;
-        this.service = service;
+        this.protocol = protocol;
         this.uncaughtExceptionHandler = new AtomicReference<UncaughtExceptionHandler>(new DefaultUncaughtExceptionHandler(this));
     }
 
@@ -243,7 +243,8 @@ public abstract class CommonConnection implements Connection {
      */
     @SuppressWarnings("unchecked")
     public <T extends Message> void handleMessage(T message) {
-        BiConsumer<Connection, T> handler = (BiConsumer<Connection, T>) service.getHandler(message.getClass());
+        BiConsumer<Connection, T> handler = (BiConsumer<Connection, T>) protocol.getMessageService().getHandler(
+                message.getClass());
         if (handler != null) {
             try {
                 handler.accept(this, message);

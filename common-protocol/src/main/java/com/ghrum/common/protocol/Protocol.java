@@ -17,27 +17,22 @@
  */
 package com.ghrum.common.protocol;
 
-import io.netty.channel.Channel;
-
 /**
- * Define the client implementation for {@link Connection}
+ * Define the configuration of the protocol
  */
-public final class CommonClientConnection extends CommonConnection {
+public interface Protocol {
     /**
-     * Default constructor for {@link CommonClientConnection}
+     * Gets the {@link MessageLookupService} of the protocol
      *
-     * @param service the service of the session
-     * @param channel the channel attached to this session
+     * @return the message service of the protocol
      */
-    public CommonClientConnection(MessageLookupService service, Channel channel) {
-        super(service, channel);
-    }
+    public MessageLookupService getMessageService();
 
     /**
-     * {@inheritDoc}
+     * Gets the {@link Message} for kicking a player or connection
+     *
+     * @param message the message of the kick
+     * @return the message constructed by the protocol
      */
-    @Override
-    public boolean disconnect(String reason) {
-        return false;
-    }
+    public Message getKickMessage(String message);
 }

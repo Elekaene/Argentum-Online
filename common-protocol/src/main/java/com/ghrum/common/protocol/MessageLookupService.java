@@ -17,7 +17,6 @@
  */
 package com.ghrum.common.protocol;
 
-import com.sun.xml.internal.ws.api.handler.MessageHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -90,7 +89,7 @@ public final class MessageLookupService {
     }
 
     /**
-     * Bind a {@link MessageHandler} to the service table
+     * Bind a {@link BiConsumer} to the service table
      *
      * @param clazz   the class type of the message
      * @param handler the handler for the given message
@@ -109,7 +108,7 @@ public final class MessageLookupService {
     }
 
     /**
-     * Gets a {@link MessageHandler} from the service given the {@link Message}'s class
+     * Gets a {@link BiConsumer} from the service given the {@link Message}'s class
      *
      * @param clazz the message class
      * @param <T>   the class type of the message

@@ -19,7 +19,6 @@ package com.ghrum.common.protocol;
 
 import java.net.InetSocketAddress;
 
-
 /**
  * Define a single connection of the protocol
  */

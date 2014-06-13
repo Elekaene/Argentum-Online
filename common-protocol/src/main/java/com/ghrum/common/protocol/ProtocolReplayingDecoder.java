@@ -15,35 +15,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ar.com.argentum.engine.protocol;
+package com.ghrum.common.protocol;
 
-import ar.com.argentum.api.protocol.Message;
-import ar.com.argentum.api.protocol.MessageCodec;
-import ar.com.argentum.api.protocol.MessageLookupService;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ReplayingDecoder;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
  * Define the {@link ReplayingDecoder} for handling header
  * <p>
- * It will convert raw frames to {@link ar.com.argentum.api.protocol.Message} frames
+ * It will convert raw frames to {@link Message} frames
  */
-public class CommonReplayingDecoder extends ReplayingDecoder<CommonReplayingDecoder.DecoderState> {
+public class ProtocolReplayingDecoder extends ReplayingDecoder<ProtocolReplayingDecoder.DecoderState> {
     private final MessageLookupService service;
     private DecoderState state;
     private int id;
     private int length;
 
     /**
-     * Default constructor for {@link CommonReplayingDecoder}
+     * Default constructor for {@link ProtocolReplayingDecoder}
      *
      * @param service the service of the decoder
      */
-    public CommonReplayingDecoder(MessageLookupService service) {
+    protected ProtocolReplayingDecoder(MessageLookupService service) {
         super(DecoderState.READ_ID);
         this.service = service;
     }
@@ -63,29 +59,13 @@ public class CommonReplayingDecoder extends ReplayingDecoder<CommonReplayingDeco
                 checkpoint(DecoderState.READ_CONTENT);
                 break;
             case READ_CONTENT:
-                decodeMessage(id, in.readBytes(length), out);
+                out.add(service.decode(id, in.readBytes(length)));
                 checkpoint(DecoderState.READ_ID);
         }
     }
 
     /**
-     * Decodes a {@link ar.com.argentum.api.protocol.Message} given its byte representation
-     *
-     * @param id    the unique identifier of the message
-     * @param input the stream that stores the message's bytes
-     * @param out   the storage of the messages
-     * @throws IOException
-     */
-    protected void decodeMessage(int id, ByteBuf input, List<Object> out) throws IOException {
-        MessageCodec<? extends Message> codec = service.getCodec(id);
-        if (codec == null) {
-            throw new IOException("Unknown operation code: " + id);
-        }
-        out.add(codec.decode(input));
-    }
-
-    /**
-     * All possible states of {@link CommonReplayingDecoder}
+     * All possible states of {@link ProtocolReplayingDecoder}
      */
     protected enum DecoderState {
         READ_ID,

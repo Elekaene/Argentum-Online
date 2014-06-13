@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ar.com.argentum.api.protocol;
+package com.ghrum.common.protocol;
 
 import io.netty.buffer.ByteBuf;
 
@@ -27,16 +27,19 @@ import java.io.IOException;
 public abstract class MessageCodec<T extends Message> {
     private final Class<T> clazz;
     private final int opcode;
+    private final Connection.State state;
 
     /**
      * Default constructor for {@link MessageCodec}
      *
      * @param clazz  the class type for the message
      * @param opcode the unique identifier of the message
+     * @param state  the state of the message
      */
-    public MessageCodec(Class<T> clazz, int opcode) {
+    public MessageCodec(Class<T> clazz, int opcode, Connection.State state) {
         this.clazz = clazz;
         this.opcode = opcode;
+        this.state = state;
     }
 
     /**
@@ -58,9 +61,18 @@ public abstract class MessageCodec<T extends Message> {
     }
 
     /**
+     * Gets the required state of the message
+     *
+     * @return the required state of the message
+     */
+    public final Connection.State getState() {
+        return state;
+    }
+
+    /**
      * Encode the message
      *
-     * @param message  the message to encode
+     * @param message the message to encode
      * @return a buffer containing the message encoded
      * @throws IOException
      */
@@ -71,7 +83,7 @@ public abstract class MessageCodec<T extends Message> {
     /**
      * Decodes the message
      *
-     * @param buffer   the buffer where the message's bytes are stored
+     * @param buffer the buffer where the message's bytes are stored
      * @return the message decoded from the buffer
      * @throws IOException
      */

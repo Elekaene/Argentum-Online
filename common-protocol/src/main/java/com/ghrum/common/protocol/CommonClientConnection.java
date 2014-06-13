@@ -15,10 +15,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ar.com.argentum.api;
+package com.ghrum.common.protocol;
+
+import io.netty.channel.Channel;
 
 /**
- * Define the main interface for the engine
+ * Define the client implementation for {@link Connection}
  */
-public interface Engine {
+public final class CommonClientConnection extends CommonConnection {
+    /**
+     * Default constructor for {@link CommonClientConnection}
+     *
+     * @param service the service of the session
+     * @param channel the channel attached to this session
+     */
+    public CommonClientConnection(MessageLookupService service, Channel channel) {
+        super(service, channel);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean disconnect(String reason) {
+        return false;
+    }
 }

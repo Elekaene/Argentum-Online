@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ar.com.argentum.api.protocol;
+package com.ghrum.common.protocol;
 
 /**
  * Represent the data of a packet to be transported though the networking system.
@@ -26,36 +26,5 @@ package ar.com.argentum.api.protocol;
  * <li>All fields in a message should be protocol-primitive</li>
  * </ul>
  */
-public abstract class Message {
-    private final SessionState requiredState;
-    private final boolean isAsync;
-
-    /**
-     * Default constructor for {@link Message}
-     *
-     * @param requiredState the required state of the message
-     * @param isAsync       true if the message doesn't run on the main thread
-     */
-    public Message(SessionState requiredState, boolean isAsync) {
-        this.requiredState = requiredState;
-        this.isAsync = isAsync;
-    }
-
-    /**
-     * Gets if the message is handled asynchronized
-     *
-     * @return true if the message is not handled on the main thread
-     */
-    public final boolean isAsync() {
-        return isAsync;
-    }
-
-    /**
-     * Gets the required state of the message
-     *
-     * @return the required state of the message
-     */
-    public final SessionState getRequiredState() {
-        return requiredState;
-    }
+public interface Message {
 }

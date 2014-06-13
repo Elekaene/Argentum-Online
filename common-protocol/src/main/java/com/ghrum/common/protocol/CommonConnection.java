@@ -15,11 +15,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ar.com.argentum.engine.protocol;
+package com.ghrum.common.protocol;
 
-import ar.com.argentum.api.plugin.Platform;
-import ar.com.argentum.api.protocol.*;
-import ar.com.argentum.api.world.Player;
 import io.netty.channel.Channel;
 
 import java.net.InetSocketAddress;
@@ -27,11 +24,12 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.function.BiConsumer;
 
 /**
- * Define the common implementation for {@link Session}
+ * Define the common implementation for {@link Connection}
  */
-public abstract class CommonSession implements Session {
+public abstract class CommonConnection implements Connection {
     /**
      * The unique identifier of the session
      */
@@ -53,32 +51,30 @@ public abstract class CommonSession implements Session {
      */
     protected final Queue<Message> sendQueue = new ConcurrentLinkedQueue<Message>();
     /**
-     * The current platform of this session
-     */
-    protected final Platform platform;
-    /**
      * The current state.
      */
-    protected SessionState state = SessionState.EXCHANGE_HANDSHAKE;
+    protected State state = State.EXCHANGE_HANDSHAKE;
     /**
      * Stores if this Session has had disconnect called
      */
     protected boolean isDisconnected = false;
     /**
-     * The player attached to the session
+     * The object attached to the session
      */
-    protected Player player = null;
+    protected Object attachment = null;
+    /**
+     * The Uncaught exception handler of this connection
+     */
+    protected UncaughtExceptionHandler uncaughtExceptionHandler;
 
     /**
-     * Default constructor for {@link CommonSession}
+     * Default constructor for {@link CommonConnection}
      *
-     * @param platform the platform of this session
-     * @param service  the service of the session
-     * @param channel  the channel attached to this session
+     * @param service the service of the session
+     * @param channel the channel attached to this session
      */
-    public CommonSession(Platform platform, MessageLookupService service, Channel channel) {
+    public CommonConnection(MessageLookupService service, Channel channel) {
         this.id = Long.toString(new Random().nextLong(), 16).trim();
-        this.platform = platform;
         this.channel = channel;
         this.service = service;
     }
@@ -103,16 +99,15 @@ public abstract class CommonSession implements Session {
      * {@inheritDoc}
      */
     @Override
-    public SessionState getState() {
+    public State getState() {
         return state;
     }
 
     /**
-     * Sets the current {@link SessionState} of the session
-     *
-     * @param state the new state of the session
+     * {@inheritDoc}
      */
-    public void setState(SessionState state) {
+    @Override
+    public void setState(State state) {
         this.state = state;
     }
 
@@ -120,17 +115,19 @@ public abstract class CommonSession implements Session {
      * {@inheritDoc}
      */
     @Override
-    public Player getPlayer() {
-        return player;
+    public Object getAttachment() {
+        return attachment;
     }
 
     /**
-     * Attach a player to the session
-     *
-     * @param player the player to attach to this session
+     * {@inheritDoc}
      */
-    public void setPlayer(Player player) {
-        this.player = player;
+    @Override
+    public void setAttachment(Object attachment) {
+        if (this.attachment != null) {
+            throw new IllegalStateException("Cannot set the attachment more than once");
+        }
+        this.attachment = attachment;
     }
 
     /**
@@ -155,8 +152,8 @@ public abstract class CommonSession implements Session {
             } else {
                 sendQueue.add(message);
             }
-        } catch (Throwable ex) {
-            // <TODO: Wolftein - Use Engine::Logger to display an error>
+        } catch (Exception ex) {
+            uncaughtExceptionHandler.uncaughtException(message, ex);
             disconnect("An exception has raised: " + ex.getLocalizedMessage());
         }
     }
@@ -196,6 +193,30 @@ public abstract class CommonSession implements Session {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UncaughtExceptionHandler getUncaughtExceptionHandler() {
+        return uncaughtExceptionHandler;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setUncaughtExceptionHandler(UncaughtExceptionHandler handler) {
+        uncaughtExceptionHandler = handler;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T extends Message> void messageReceived(T message) {
+        messageQueue.add(message);
+    }
+
+    /**
      * Pulse the session
      */
     public void pulse() {
@@ -204,43 +225,30 @@ public abstract class CommonSession implements Session {
         // Pulse every delivered message and cache them
         // on the buffer. After every message was serialized to the
         // buffer, flush it
-        while ((message = sendQueue.poll()) != null) {
-            channel.write(message);
-        }
+        sendQueue.forEach(channel::write);
+        sendQueue.clear();
         channel.flush();
 
-        // Pulse every received message
+        // Pulse every received message and handle to its
+        // handler
         messageQueue.forEach(this::handleMessage);
+        messageQueue.clear();
     }
 
     /**
-     * Called when the session receives a message
-     *
-     * @param message the message received
-     * @param <T>     the type of the message
-     */
-    public <T extends Message> void onMessageReceive(T message) {
-        if (message.isAsync()) {
-            handleMessage(message);
-        } else {
-            messageQueue.add(message);
-        }
-    }
-
-    /**
-     * Handle command {@link MessageHandler}
+     * Handle a message
      *
      * @param message the message to handle
      * @param <T>     the type of the message
      */
     @SuppressWarnings("unchecked")
     public <T extends Message> void handleMessage(T message) {
-        MessageHandler<Message> handler = (MessageHandler<Message>) service.getHandler(message.getClass());
+        BiConsumer<Connection, T> handler = (BiConsumer<Connection, T>) service.getHandler(message.getClass());
         if (handler != null) {
             try {
-                handler.handle(platform, this, message);
-            } catch (Throwable ex) {
-                // <TODO: Wolftein - Use Engine::Logger to display an error>
+                handler.accept(this, message);
+            } catch (Exception ex) {
+                uncaughtExceptionHandler.uncaughtException(message, ex);
                 disconnect("An exception has raised: " + ex.getLocalizedMessage());
             }
         }

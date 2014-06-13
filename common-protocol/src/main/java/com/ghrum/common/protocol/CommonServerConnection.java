@@ -15,34 +15,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ar.com.argentum.api.event;
+package com.ghrum.common.protocol;
+
+import io.netty.channel.Channel;
 
 /**
- * Define all possible priorities of {@link Event}
+ * Define the server implementation for {@link Connection}
  */
-public enum EventPriority {
+public final class CommonServerConnection extends CommonConnection {
     /**
-     * LOWEST is executed before all
+     * Default constructor for {@link CommonClientConnection}
+     *
+     * @param service the service of the session
+     * @param channel the channel attached to this session
      */
-    LOWEST,
+    public CommonServerConnection(MessageLookupService service, Channel channel) {
+        super(service, channel);
+    }
+
     /**
-     * LOW is executed after {@link #LOWEST}
+     * {@inheritDoc}
      */
-    LOW,
-    /**
-     * NORMAL is executed after {@link #LOW}
-     */
-    NORMAL,
-    /**
-     * HIGH is executed after {@link #NORMAL}
-     */
-    HIGH,
-    /**
-     * HIGHEST is executed after {@link #HIGH}
-     */
-    HIGHEST,
-    /**
-     * MONITOR is executed after all
-     */
-    MONITOR
+    @Override
+    public boolean disconnect(String reason) {
+        return false;
+    }
+
 }

@@ -171,4 +171,29 @@ public interface Connection {
          */
         public void uncaughtException(Message message, Exception exception);
     }
+
+    /**
+     * Define a default
+     */
+    public static final class DefaultUncaughtExceptionHandler implements UncaughtExceptionHandler {
+        private final Connection connection;
+
+        /**
+         * Default constructor for {@link DefaultUncaughtExceptionHandler}
+         *
+         * @param connection the connection of the handler
+         */
+        public DefaultUncaughtExceptionHandler(Connection connection) {
+            this.connection = connection;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void uncaughtException(Message message, Exception exception) {
+            exception.printStackTrace();
+            connection.disconnect("An exception has raised: " + exception.getLocalizedMessage());
+        }
+    }
 }

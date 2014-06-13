@@ -19,10 +19,18 @@ package com.ghrum.common.protocol;
 
 import io.netty.channel.Channel;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 /**
  * Define the server implementation for {@link Connection}
  */
 public final class CommonServerConnection extends CommonConnection {
+    /**
+     * A list of the sessions.
+     */
+    private final ConcurrentMap<CommonConnection, Boolean> registry = new ConcurrentHashMap<>();
+
     /**
      * Default constructor for {@link CommonClientConnection}
      *
@@ -38,7 +46,44 @@ public final class CommonServerConnection extends CommonConnection {
      */
     @Override
     public boolean disconnect(String reason) {
-        return false;
+        return close(false, reason);
     }
 
+    /**
+     * Close the primary channel or all connected channels
+     *
+     * @param closePrimary true if we should close primary channel as-well
+     * @param reason       the reason for disconnection
+     * @return whether the connection was disconnected
+     */
+    public boolean close(boolean closePrimary, String reason) {
+        return false; // TODO
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void pulse() {
+        super.pulse();
+        registry.keySet().forEach(CommonConnection::pulse);
+    }
+
+    /**
+     * Adds a new connection to the pool
+     *
+     * @param connection the connection to add to the pool
+     */
+    public void add(CommonConnection connection) {
+        registry.put(connection, true);
+    }
+
+    /**
+     * Removes a connection from the pool
+     *
+     * @param connection the connection to remove from the pool
+     */
+    public void remove(CommonConnection connection) {
+        registry.remove(connection);
+    }
 }

@@ -21,9 +21,11 @@ import io.netty.channel.Channel;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 
 /**
@@ -65,7 +67,7 @@ public abstract class CommonConnection implements Connection {
     /**
      * The Uncaught exception handler of this connection
      */
-    protected UncaughtExceptionHandler uncaughtExceptionHandler;
+    protected AtomicReference<UncaughtExceptionHandler> uncaughtExceptionHandler;
 
     /**
      * Default constructor for {@link CommonConnection}
@@ -77,6 +79,7 @@ public abstract class CommonConnection implements Connection {
         this.id = Long.toString(new Random().nextLong(), 16).trim();
         this.channel = channel;
         this.service = service;
+        this.uncaughtExceptionHandler = new AtomicReference<UncaughtExceptionHandler>(new DefaultUncaughtExceptionHandler(this));
     }
 
     /**
@@ -153,8 +156,7 @@ public abstract class CommonConnection implements Connection {
                 sendQueue.add(message);
             }
         } catch (Exception ex) {
-            uncaughtExceptionHandler.uncaughtException(message, ex);
-            disconnect("An exception has raised: " + ex.getLocalizedMessage());
+            uncaughtExceptionHandler.get().uncaughtException(message, ex);
         }
     }
 
@@ -171,9 +173,7 @@ public abstract class CommonConnection implements Connection {
      */
     @Override
     public void sendAll(boolean isUrgent, Message... messages) {
-        for (Message message : messages) {
-            send(isUrgent, message);
-        }
+        Arrays.asList(messages).forEach((Message message) -> send(isUrgent, message));
     }
 
     /**
@@ -197,7 +197,7 @@ public abstract class CommonConnection implements Connection {
      */
     @Override
     public UncaughtExceptionHandler getUncaughtExceptionHandler() {
-        return uncaughtExceptionHandler;
+        return uncaughtExceptionHandler.get();
     }
 
     /**
@@ -205,7 +205,7 @@ public abstract class CommonConnection implements Connection {
      */
     @Override
     public void setUncaughtExceptionHandler(UncaughtExceptionHandler handler) {
-        uncaughtExceptionHandler = handler;
+        uncaughtExceptionHandler.set(handler);
     }
 
     /**
@@ -248,8 +248,7 @@ public abstract class CommonConnection implements Connection {
             try {
                 handler.accept(this, message);
             } catch (Exception ex) {
-                uncaughtExceptionHandler.uncaughtException(message, ex);
-                disconnect("An exception has raised: " + ex.getLocalizedMessage());
+                uncaughtExceptionHandler.get().uncaughtException(message, ex);
             }
         }
     }
